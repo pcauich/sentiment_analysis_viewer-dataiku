@@ -1,0 +1,142 @@
+img {
+  border: 0px;
+  box-shadow: 0 0 0px;
+}
+
+html, body{
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#header_wrap {
+  height: 100px;
+}
+.outer {
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  width: auto;
+  height: auto;
+}
+
+html, body, #map {
+  height: 100%;
+  width: 100vw;
+}
+
+/*#map {
+  height: 100%;
+}*/
+
+body {
+  margin:0;
+  padding:0px;
+  font:15px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color:#00B7FF;
+}
+#leg, #leg_title {
+  position:absolute;
+  top:50px;
+  right:10px;
+  width:100px;
+  padding:10px;
+  background:rgba(34,34,34,1);
+  color:#999;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size:12px;
+  line-height:18px;
+  border-radius:3px;
+  max-height:80%;
+  overflow:auto;
+}
+#leg_title {
+  top:10px;
+}
+#leg_items {
+  position:relative;
+  margin-left:5px;
+  top:6px
+}
+#project_title {
+  margin-top: -30px;
+}
+#nf_div {
+  z-index: 100;
+  position: absolute;
+  left: 10px;
+  bottom: 46px;
+  height: 48px;
+  width: 48px;
+}
+
+.info {
+      padding: 6px 8px;
+      font: 14px/16px Arial, Helvetica, sans-serif;
+      background: white;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+  }
+.info h4 {
+      margin: 0 0 5px;
+      color: #777;
+  }
+
+.custom .leaflet-popup-tip,
+.custom .leaflet-popup-content-wrapper {
+    background: #20B2AA;
+    color: #ffffff;
+}
+
+#leaflet-slider {
+    margin-bottom: 15px;
+}
+
+#index{
+      /* The image used */
+    background-image: url("https://dz2cdn1.dzone.com/storage/article-thumb/1287748-thumb.jpg");
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#container {
+  background-color: black;
+  border-radius: 10px;
+  padding: 5px;
+  display: block;
+  margin: 0 auto;
+  border-width: 1px;
+  border-color: Azure;
+  border-style: solid;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.leaflet-popup-content
+{
+    white-space: pre-wrap; /* css-3 */    
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */    
+    white-space: -o-pre-wrap; /* Opera 7 */    
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+
+}

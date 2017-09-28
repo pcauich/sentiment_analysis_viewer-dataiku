@@ -1,0 +1,135 @@
+extends layout.pug
+
+block head
+            title @Dataiku tweets Map
+
+block content
+    #map
+
+    script(type='text/javascript').
+        var map = L.map('map').setView([#{lat},#{lng}], 3);
+        var openstreetBlackAndWhite = L.tileLayer.provider('OpenStreetMap.BlackAndWhite', {'minZoom': 2});
+        var cartodbDarkMatter = L.tileLayer.provider('CartoDB.DarkMatter', {'minZoom': 2}).addTo(map);
+        
+        // Add an OpenStreetMap(c) based background
+        //var cartodb =  new  L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', minZoom:2, maxZoom:20});
+        // load a mapbox base map layer
+        //var accessToken = "pk.eyJ1IjoicGNhdSIsImEiOiJjajdtZmw4ZmQwM2dkMzN1OWloN3lkcDM1In0.NVnDGko1Y2s4L4bH_Uagxw";
+        //var mapboxUrl = "https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token="+accessToken ;
+        //var mapbox = L.tileLayer(mapboxUrl, { attribution:'&copy; <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">        OpenStreetMap</a>', minZoom:2, maxZoom: 20});
+
+        var countPoints = 0;
+        var customOptions = {
+            'className' : 'custom',
+        };
+        var citweetsPos = L.layerGroup();
+        var citweetsNeg = L.layerGroup();
+        var citweetsNeu = L.layerGroup();
+        var allOverlays = L.layerGroup();
+        $.getJSON('/maplayers',function(result){
+            $.each(result, function(i, record){
+                // Replace by your own column names here
+                //console.log(record)
+                var epoch = record["timestamp_parsed"];
+                var lat = parseFloat(record["_lat"]);
+                var lon = parseFloat(record["_lon"]);
+                var name = record["user"];
+                var tweet = record["text"];
+                var senti =  record["sentiment"];
+                var size = parseInt(record["likes"]);
+                var sentiVal = senti == "positive" ? 1: senti=="negative" ? 2 : 3;
+                // Radius of the marker is in meters
+                var rad = Math.log(size+2) *  5;
+                var scolor = chroma.scale(['ForestGreen','FireBrick','RoyalBlue']).domain([1,3]);
+                //debugger
+                if (!isNaN(lat) && !isNaN(lon)){
+                    countPoints +=1;
+                    //console.log(lat,lon)
+                    var customPopup = "<p>User: <strong>" + name + "</strong></br>"+
+                                 "Tweet: <strong>" + tweet + "</strong></br>"+
+                                 "PubDate: <strong>" + epoch + "</strong></br>"+
+                                 "Likes: <strong>" + size + "</strong></br>"+
+                                 "Sentiment: <strong>" + senti + "</strong></p>";
+
+                    //var popup = L.responsivePopup().setContent(customPopup);
+
+                    var marker = new L.circleMarker([lat, lon],{
+                        radius: rad,
+                        color: 'white',
+                        fillColor: scolor(sentiVal).hex(),
+                        fillOpacity: 0.9,
+                        time: epoch
+                    })
+                    .bindPopup(customPopup, customOptions);
+                
+                    senti=="positive" ? citweetsPos.addLayer(marker) : senti=="negative" ? citweetsNeg.addLayer(marker) : citweetsNeu.addLayer(marker) ;
+                }
+            });
+
+            //Base maps layers
+            var baseLayers = { 
+                "BlackAndWhite": openstreetBlackAndWhite,
+                "DarkMatter": cartodbDarkMatter
+            };
+            
+            //var clonAllOverlays = cloneLayer(allOverlays);
+            // Overlay layers are grouped
+            var groupedOverlays = {
+                "Sent. Marks": {
+                "Pos. Tweets": citweetsPos,
+                "Neg. Tweets": citweetsNeg,
+                "Neu. Tweets": citweetsNeu,
+                }
+            };
+            
+            var options = {
+              // Make the "Landmarks" group exclusive (use radio inputs)
+              //exclusiveGroups: ["Sent. Marks"],
+              // Show a checkbox next to non-exclusive group labels for toggling all
+              groupCheckboxes: true,
+              position: "bottomleft"
+            };
+            
+            // Use the custom grouped layer control, not "L.control.layers"
+            var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, options);
+            map.addControl(layerControl);
+            
+            var sliderControl;
+            map.on("overlayadd", function(eo) {
+                //debugger
+                //console.log(eo.name);
+            });
+            
+            map.on("overlayremove", function(eo){
+                //console.log(eo.name)
+            });
+            
+            citweetsPos.eachLayer(function (marker) {
+                allOverlays.addLayer(marker);
+            });
+            citweetsNeg.eachLayer(function (marker) {
+                allOverlays.addLayer(marker);
+            });
+            citweetsNeu.eachLayer(function (marker) {
+                allOverlays.addLayer(marker);
+            });
+            //var callOverlays = $.extend(true, {}, allOverlays);
+            var sliderControl;
+            $(".leaflet-control-layers-group-selector").change(function() {
+                //debugger
+                if(this.checked){
+                    //map.removeLayer(citweetsPos);
+                    //map.removeLayer(citweetsNeg);
+                    //map.removeLayer(citweetsNeu);
+                    //alert("El checkbox con valor " + $(this).val() + " está seleccionado");
+                    sliderControl = L.control.sliderControl({position: "topright", layer: allOverlays, showAllOnStart: false});
+                    map.addControl(sliderControl);
+                    sliderControl.startSlider();
+                    
+                }
+                else if (!this.checked){
+                    sliderControl.removeFrom(map);
+                }
+            });
+           //debugger
+        });

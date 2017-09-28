@@ -1,0 +1,11 @@
+extends layout.pug
+ 
+block content
+  body(id='index')
+  div(id="atribution")
+    p(style={color: 'gray'}) &copy; Datadistick | Grupoplenum
+
+  div(id= "container")
+    h1(style={color: 'LightSeaGreen '})= title
+    p(style={color: 'White'}) Welcome to #{title}
+    a(href='/map', style={color: 'Purple', background: 'PaleTurquoise'}) Go to Map →
