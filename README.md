@@ -2,8 +2,8 @@
 
 A simple Node.js app using [Express 4](http://expressjs.com/).
 
-Simple Sentiment Analysis tweets data(Tweets that mention specific account @dataiku) - since 2012 to 2017
-
+First we perform a sentiment analysis on tweets data(Tweets that mention specific account @dataiku) - since 2012 to 2017
+Then,
 We scrape tweets using a python script and the twitter public search api to collect data, then we apply sentiment analysis using Python and a NLP module, specifically the module called textblob, built on top of python nltk.
 
 
