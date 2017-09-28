@@ -52,12 +52,12 @@ block content
                                  "Sentiment: <strong>" + senti + "</strong></p>";
 
                     //var popup = L.responsivePopup().setContent(customPopup);
-
+                    var color = scolor(sentiVal).hex();
                     var marker = new L.circleMarker([lat, lon],{
                         radius: rad,
-                        color: 'white',
-                        fillColor: scolor(sentiVal).hex(),
-                        fillOpacity: 0.9,
+                        color: color,
+                        fillColor: color,
+                        fillOpacity: 0.2,
                         time: epoch
                     })
                     .bindPopup(customPopup, customOptions);
