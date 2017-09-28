@@ -1,16 +1,19 @@
-# node-js-getting-started
+# Sentiment Analyis on tweets that mention @dataiku
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
+A simple Node.js app using [Express 4](http://expressjs.com/).
 
-This application supports the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
+Simple Sentiment Analysis tweets data(Tweets that mention specific account @dataiku) - since 2012 to 2017
+
+We scrape tweets using a python script and the twitter public search api to collect data, then we apply sentiment analysis using Python and a NLP module, specifically the module called textblob, built on top of python nltk.
+
 
 ## Running Locally
 
 Make sure you have [Node.js](http://nodejs.org/) and the [Heroku CLI](https://cli.heroku.com/) installed.
 
 ```sh
-$ git clone git@github.com:heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
+$ git clone https://github.com/pcauich/sentiment_analysis_viewer-dataiku.git # or clone your own fork
+$ cd sentiment_analysis_viewer-dataiku
 $ npm install
 $ npm start
 ```
@@ -37,3 +40,14 @@ For more information about using Node.js on Heroku, see these Dev Center article
 - [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
 - [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
 - [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
+
+##Attribution
+Created by: Pedro Cauich
+
+Credits to: 
+- [Dataiku Dss](https://www.dataiku.com/)
+- [Python NLTK](http://www.nltk.org/)
+- [TextBlolb](https://textblob.readthedocs.io/en/dev/)
+- [Twitter Advanced search](https://twitter.com/search-advanced)
+- [Leaflet](http://leafletjs.com/)
+- And more...
