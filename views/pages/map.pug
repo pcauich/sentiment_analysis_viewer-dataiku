@@ -8,8 +8,8 @@ block content
 
     script(type='text/javascript').
         var map = L.map('map').setView([#{lat},#{lng}], 3);
-        var openstreetBlackAndWhite = L.tileLayer.provider('OpenStreetMap.BlackAndWhite', {'minZoom': 2});
-        var cartodbDarkMatter = L.tileLayer.provider('CartoDB.DarkMatter', {'minZoom': 2}).addTo(map);
+        var openstreetBlackAndWhite = L.tileLayer.provider('CartoDB.Positron', {'minZoom': 2, 'maxZoom':20});
+        var cartodbDarkMatter = L.tileLayer.provider('CartoDB.DarkMatter', {'minZoom': 2, 'maxZoom':20}).addTo(map);
         
         // Add an OpenStreetMap(c) based background
         //var cartodb =  new  L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', minZoom:2, maxZoom:20});
@@ -57,7 +57,7 @@ block content
                         radius: rad,
                         color: color,
                         fillColor: color,
-                        fillOpacity: 0.2,
+                        fillOpacity: 0.3,
                         time: epoch
                     })
                     .bindPopup(customPopup, customOptions);
@@ -68,7 +68,7 @@ block content
 
             //Base maps layers
             var baseLayers = { 
-                "BlackAndWhite": openstreetBlackAndWhite,
+                "Positron": openstreetBlackAndWhite,
                 "DarkMatter": cartodbDarkMatter
             };
             
