@@ -8,8 +8,8 @@ block content
 
     script(type='text/javascript').
         var map = L.map('map').setView([#{lat},#{lng}], 3);
-        var openstreetBlackAndWhite = L.tileLayer.provider('CartoDB.Positron', {'minZoom': 2, 'maxZoom':20});
-        var cartodbDarkMatter = L.tileLayer.provider('CartoDB.DarkMatter', {'minZoom': 2, 'maxZoom':20}).addTo(map);
+        var openstreetBlackAndWhite = L.tileLayer.provider('CartoDB.Positron', {'minZoom': 2, 'maxZoom':20, 'label':'CartoDB Positron'});
+        var cartodbDarkMatter = L.tileLayer.provider('CartoDB.DarkMatter', {'minZoom': 2, 'maxZoom':20, 'label':'CartoDB DarkMatter'}).addTo(map);
         
         // Add an OpenStreetMap(c) based background
         //var cartodb =  new  L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', minZoom:2, maxZoom:20});
@@ -26,6 +26,7 @@ block content
         var citweetsNeg = L.layerGroup();
         var citweetsNeu = L.layerGroup();
         var allOverlays = L.layerGroup();
+        var sliderControl = undefined;
         $.getJSON('/maplayers',function(result){
             $.each(result, function(i, record){
                 // Replace by your own column names here
@@ -57,79 +58,172 @@ block content
                         radius: rad,
                         color: color,
                         fillColor: color,
-                        fillOpacity: 0.3,
+                        fillOpacity: 0.1,
                         time: epoch
                     })
                     .bindPopup(customPopup, customOptions);
-                
+                    allOverlays.addLayer(marker);
                     senti=="positive" ? citweetsPos.addLayer(marker) : senti=="negative" ? citweetsNeg.addLayer(marker) : citweetsNeu.addLayer(marker) ;
                 }
             });
 
-            //Base maps layers
-            var baseLayers = { 
-                "Positron": openstreetBlackAndWhite,
-                "DarkMatter": cartodbDarkMatter
-            };
-            
+            //Base maps layers            
+            var basemaps = [cartodbDarkMatter, openstreetBlackAndWhite]
             //var clonAllOverlays = cloneLayer(allOverlays);
             // Overlay layers are grouped
             var groupedOverlays = {
-                "Sent. Marks": {
+                "Tweets by Sentiment": {
                 "Pos. Tweets": citweetsPos,
                 "Neg. Tweets": citweetsNeg,
                 "Neu. Tweets": citweetsNeu,
                 }
             };
             
-            var options = {
-              // Make the "Landmarks" group exclusive (use radio inputs)
-              //exclusiveGroups: ["Sent. Marks"],
-              // Show a checkbox next to non-exclusive group labels for toggling all
-              groupCheckboxes: true,
-              position: "bottomleft"
-            };
-            
             // Use the custom grouped layer control, not "L.control.layers"
-            var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, options);
-            map.addControl(layerControl);
             
-            var sliderControl;
+            var layerControl = L.control.basemaps({
+                basemaps: basemaps,
+                tileX: 0,  // tile X coordinate
+                tileY: 0,  // tile Y coordinate
+                tileZ: 1   // tile zoom level
+            });
+            map.addControl(layerControl);
+
+            var activeOverlays = [];
             map.on("overlayadd", function(eo) {
                 //debugger
-                //console.log(eo.name);
+                //console.log("added overlay: " + eo.name);
             });
             
             map.on("overlayremove", function(eo){
-                //console.log(eo.name)
+                //console.log("removed overlay: " + eo.name);
             });
             
-            citweetsPos.eachLayer(function (marker) {
-                allOverlays.addLayer(marker);
+            var toggle = L.easyButton({
+                id: 'animated-marker-toggle',
+                type: 'animate',
+                states: [{
+                stateName: 'add-timeline',
+                icon: 'fa-sliders',
+                title: 'Add a timeline slider of all markers',
+                onClick: function(control) {
+                    toggle2.disable();
+                    toggle3.disable();
+                    toggle4.disable();
+                    sliderControl = L.control.sliderControl({position: "topright", layer: allOverlays, showAllOnStart: false});
+                    map.addControl(sliderControl);
+                    sliderControl.startSlider();
+                    control.state('remove-timeline');
+                }
+                }, {
+                    icon: 'fa-undo',
+                    stateName: 'remove-timeline',
+                    onClick: function(control) {
+                        toggle2.enable();
+                        toggle3.enable();
+                        toggle4.enable();
+                        sliderControl.removeFrom(map);
+                        control.state('add-timeline');
+                    },
+                title: 'remove timeline slider and markers'
+                }]
             });
-            citweetsNeg.eachLayer(function (marker) {
-                allOverlays.addLayer(marker);
+
+            var toggle2 = L.easyButton({
+                id: 'animated-marker-toggle2',
+                type: 'animate',
+                states: [{
+                stateName: 'add-positive',
+                icon: 'fa-check-circle',
+                title: 'Add Positive markers',
+                onClick: function(control) {
+                    map.addLayer(citweetsPos);
+                    control.state('remove-positive');
+                }
+                }, {
+                    icon: 'fa-undo',
+                    stateName: 'remove-positive',
+                    onClick: function(control) {
+                        map.removeLayer(citweetsPos);
+                        control.state('add-positive');
+                    },
+                title: 'remove positive markers'
+                }]
             });
-            citweetsNeu.eachLayer(function (marker) {
-                allOverlays.addLayer(marker);
+
+            var toggle3 = L.easyButton({
+                id: 'animated-marker-toggle3',
+                type: 'animate',
+                states: [{
+                stateName: 'add-negative',
+                icon: 'fa-times-circle',
+                title: 'Add Negative markers',
+                onClick: function(control) {
+                    map.addLayer(citweetsNeg);
+                    control.state('remove-negative');
+                }
+                }, {
+                    icon: 'fa-undo',
+                    stateName: 'remove-negative',
+                    onClick: function(control) {
+                        map.removeLayer(citweetsNeg);
+                        control.state('add-negative');
+                    },
+                title: 'remove negative markers'
+                }]
             });
+            var toggle4 = L.easyButton({
+                id: 'animated-marker-toggle4',
+                type: 'animate',
+                states: [{
+                stateName: 'add-neutral',
+                icon: 'fa-minus-circle',
+                title: 'Add Neutral markers',
+                onClick: function(control) {
+                    map.addLayer(citweetsNeu);
+                    control.state('remove-neutral');
+                }
+                }, {
+                    icon: 'fa-undo',
+                    stateName: 'remove-neutral',
+                    onClick: function(control) {
+                        map.removeLayer(citweetsNeu);
+                        control.state('add-neutral');
+                    },
+                title: 'remove neutral markers'
+                }]
+            });
+
+            var sentiBar = L.easyBar([toggle, toggle2, toggle3, toggle4,]);
+
+            sentiBar.addTo(map);
+
+            //citweetsPos.eachLayer(function (marker) {
+            //    allOverlays.addLayer(marker);
+            //});
+            //citweetsNeg.eachLayer(function (marker) {
+            //    allOverlays.addLayer(marker);
+            //});
+            //citweetsNeu.eachLayer(function (marker) {
+            //    allOverlays.addLayer(marker);
+            //});
             //var callOverlays = $.extend(true, {}, allOverlays);
-            var sliderControl;
-            $(".leaflet-control-layers-group-selector").change(function() {
+            //var sliderControl = undefined;
+            //$(".leaflet-control-layers-group-selector").change(function() {
                 //debugger
-                if(this.checked){
+            //    if(this.checked){
                     //map.removeLayer(citweetsPos);
                     //map.removeLayer(citweetsNeg);
                     //map.removeLayer(citweetsNeu);
                     //alert("El checkbox con valor " + $(this).val() + " está seleccionado");
-                    sliderControl = L.control.sliderControl({position: "topright", layer: allOverlays, showAllOnStart: false});
-                    map.addControl(sliderControl);
-                    sliderControl.startSlider();
+            //        sliderControl = L.control.sliderControl({position: "topright", layer: allOverlays, showAllOnStart: false});
+            //        map.addControl(sliderControl);
+            //        sliderControl.startSlider();
                     
-                }
-                else if (!this.checked){
-                    sliderControl.removeFrom(map);
-                }
-            });
+            //    }
+            //    else if (!this.checked){
+            //        sliderControl.removeFrom(map);
+            //    }
+            //});
            //debugger
         });
