@@ -110,10 +110,23 @@ block content
                     toggle2.disable();
                     toggle3.disable();
                     toggle4.disable();
+                    if (map.hasLayer(citweetsPos)){
+                        map.removeLayer(citweetsPos);
+                    }
+                    if (map.hasLayer(citweetsNeg)){
+                        map.removeLayer(citweetsNeg);
+                    }
+                    if (map.hasLayer(citweetsNeu)){
+                        map.removeLayer(citweetsNeu);
+                        control.state('add-neutral');
+                    }
                     sliderControl = L.control.sliderControl({position: "topright", layer: allOverlays, showAllOnStart: false});
                     map.addControl(sliderControl);
                     sliderControl.startSlider();
                     control.state('remove-timeline');
+                    toggle2.state('add-positive');
+                    toggle3.state('add-negative');
+                    toggle4.state('add-neutral');
                 }
                 }, {
                     icon: 'fa-undo',
@@ -124,6 +137,7 @@ block content
                         toggle4.enable();
                         sliderControl.removeFrom(map);
                         control.state('add-timeline');
+
                     },
                 title: 'remove timeline slider and markers'
                 }]
