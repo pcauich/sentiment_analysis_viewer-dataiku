@@ -1,9 +1,9 @@
 {
   "name": "sentiment-analysis-twitter-map",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Sentiment analysis on tweets data that mention @dataiku + map to visualize results with  Node.js app using Express 4",
   "engines": {
-    "node": "6.11.1"
+    "node": "8.11.2"
   },
   "main": "index.js",
   "scripts": {
