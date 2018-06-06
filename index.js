@@ -5,7 +5,7 @@ var app = express();
 var mongoose = require('mongoose');
 
 // Mongoose connection to MongoDB
-mongoose.connect('mongodb://dataiku_plenum:dataiku_plenum@ds131854.mlab.com:31854/dataiku_plenum',{ useMongoClient: true, promiseLibrary: global.Promise });
+mongoose.connect('mongodb://dataiku_plenum:dataiku_plenum@ds131854.mlab.com:31854/dataiku_plenum',{promiseLibrary: global.Promise });
 //Get the default connection
 var db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
