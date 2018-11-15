@@ -22,13 +22,6 @@ block content
         var openstreetBlackAndWhite = L.tileLayer.provider('CartoDB.Positron', {'minZoom': 2, 'maxZoom':20, 'label':'CartoDB Positron'});
         var cartodbDarkMatter = L.tileLayer.provider('CartoDB.DarkMatter', {'minZoom': 2, 'maxZoom':20, 'label':'CartoDB DarkMatter'}).addTo(map);
         
-        // Add an OpenStreetMap(c) based background
-        //var cartodb =  new  L.tileLayer("http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', minZoom:2, maxZoom:20});
-        // load a mapbox base map layer
-        //var accessToken = "pk.eyJ1IjoicGNhdSIsImEiOiJjajdtZmw4ZmQwM2dkMzN1OWloN3lkcDM1In0.NVnDGko1Y2s4L4bH_Uagxw";
-        //var mapboxUrl = "https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token="+accessToken ;
-        //var mapbox = L.tileLayer(mapboxUrl, { attribution:'&copy; <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">        OpenStreetMap</a>', minZoom:2, maxZoom: 20});
-
         var countPoints = 0;
         var customOptions = {
             'className' : 'custom',
